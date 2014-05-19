@@ -2,6 +2,7 @@ package app;
 
 import hmm.LeftRightHmm;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -77,6 +78,11 @@ public class Main {
 		oseq.add(new ObservationInteger(3));
 		oseq.add(new ObservationInteger(3));
 		oseq.add(new ObservationInteger(3));
+		
+		File file = new File("/home/nikola");
+		for (String s : file.list()) {
+			System.out.println(s);
+		}
 		
 		double p = hmm.lnProbability(oseq);
 		System.out.println(p);

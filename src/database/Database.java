@@ -36,7 +36,7 @@ public class Database {
 	}
 	
 	public void save(Model model) {
-		File folder = getFolder(model);
+		File folder = getFolder(model.getClass());
 		
 		try {
 			File file = new File(folder.getAbsoluteFile() + "/" + model.getName() + model.getExtension());
@@ -53,10 +53,10 @@ public class Database {
 		}
 	}
 
-	public Model load(Model model) {
-		File folder = getFolder(model);
+	public Model load(Class clazz, String name, String extension) {
+		File folder = getFolder(clazz);
 		try {
-			File file = new File(folder.getAbsoluteFile() + "/" + model.getName() + model.getExtension());
+			File file = new File(folder.getAbsoluteFile() + "/" + name + extension);
 			FileInputStream fileIn = new FileInputStream(file);
 			ObjectInputStream in = new ObjectInputStream(fileIn);
 			
@@ -72,21 +72,32 @@ public class Database {
 		return null;
 	}
 	
+	public HmmModel[] loadHmmModels() {
+		String[] folderList = hmmFolder.list();
+		HmmModel[] hmmModels = new HmmModel[folderList.length];
+		
+		int k = 0;
+		for (String folder : folderList) {
+			hmmModels[k++] = (HmmModel) load(HmmModel.class, folder, HmmModel.HMM_EXTENSION);
+		}
+		return hmmModels;
+	}
+	
 	public TrainingSetFiles getTrainingSet() {
 		TrainingSetFiles trainingSetFiles = new TrainingSetFiles();
 		String[] folders = trainingSetFolder.list();
 		
 		for (String folder : folders) {
-			trainingSetFiles.addSet(new File(folder));
+			trainingSetFiles.addSet(new File(trainingSetFolder.getAbsoluteFile() + "/" + folder));
 		}
 		return trainingSetFiles;
 	}
 	
-	private File getFolder(Model model) {
-		if (model instanceof HmmModel) {
+	private File getFolder(Class clazz) {
+		if (clazz.equals(HmmModel.class)) {
 			return hmmFolder;
 		}
-		else if (model instanceof CodebookModel) {
+		else if (clazz.equals(CodebookModel.class)) { 
 			return codebookFolder;
 		}
 		else {
