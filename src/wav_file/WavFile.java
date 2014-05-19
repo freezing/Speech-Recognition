@@ -12,8 +12,10 @@ package wav_file;
 
 import java.io.*;
 
-public class WavFile
+public class WavFile implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private enum IOState {READING, WRITING, CLOSED};
 	private final static int BUFFER_SIZE = 4096;
 

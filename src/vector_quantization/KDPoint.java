@@ -1,6 +1,10 @@
 package vector_quantization;
 
-public class KDPoint {
+import java.io.Serializable;
+
+public class KDPoint implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	protected float[] coordinates;
 
 	public KDPoint(float[] coordinates) {

@@ -1,6 +1,10 @@
 package vector_quantization;
 
-public class Codebook {
+import java.io.Serializable;
+
+public class Codebook implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	private KDCluster[] clusters;
 	private KDPoint[] points;
 	private int codebookSize = 256;
@@ -56,13 +60,5 @@ public class Codebook {
 		for (KDCluster cluster : clusters) {
 			cluster.update();
 		}
-	}
-	
-	public void saveToFile() {
-		
-	}
-	
-	public static Codebook readFromFile() {
-		return new Codebook(null, 256);
 	}
 }

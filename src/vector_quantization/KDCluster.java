@@ -4,7 +4,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class KDCluster extends KDPoint {
-
+	private static final long serialVersionUID = 1L;
+	
 	private Set<KDPoint> points;
 	
 	public KDCluster(float[] coordinates) {
