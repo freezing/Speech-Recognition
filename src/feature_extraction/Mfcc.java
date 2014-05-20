@@ -2,9 +2,9 @@ package feature_extraction;
 
 public class Mfcc {
 	
-	private float[][] filterBank;
+	private double[][] filterBank;
 	
-	private float sampleRate;
+	private double sampleRate;
 	private int frameLength;
 	private int melFilterCount;
 	
@@ -21,30 +21,30 @@ public class Mfcc {
 	}
 
 	private void initializeFilterBanks() {
-		final float lowerFreq = 300.0f;
-		final float higherFreq = sampleRate / 2.0f;
+		final double lowerFreq = 300.0f;
+		final double higherFreq = sampleRate / 2.0f;
 		
-		final float lowerMel = freqToMel(lowerFreq);
-		final float higherMel = freqToMel(higherFreq);
+		final double lowerMel = freqToMel(lowerFreq);
+		final double higherMel = freqToMel(higherFreq);
 		
 		int[] f = new int[melFilterCount + 2];
 		
 		for (int i = 0; i < f.length; i++) {
-			float h = melToFreq(lowerMel + i * (higherMel - lowerMel) / (melFilterCount + 1));
+			double h = melToFreq(lowerMel + i * (higherMel - lowerMel) / (melFilterCount + 1));
 			f[i] = (int)Math.floor((frameLength + 1) * h / sampleRate);
 		}
 		
-		filterBank = new float[melFilterCount][frameLength / 2];
+		filterBank = new double[melFilterCount][frameLength / 2];
 		for (int i = 1; i <= melFilterCount; i++) {
 			for (int k = 0; k < frameLength / 2; k++) {
 				if (k < f[i - 1]) {
 					filterBank[i - 1][k] = 0.0f;
 				}
 				else if (k <= f[i]) {
-					filterBank[i - 1][k] = (float)(k - f[i - 1]) / (f[i] - f[i - 1]);
+					filterBank[i - 1][k] = (double)(k - f[i - 1]) / (f[i] - f[i - 1]);
 				}
 				else if (k <= f[i + 1]) {
-					filterBank[i - 1][k] = (float)(f[i + 1] - k) / (f[i + 1] - f[i]);
+					filterBank[i - 1][k] = (double)(f[i + 1] - k) / (f[i + 1] - f[i]);
 				}
 				else {
 					filterBank[i - 1][k] = 0.0f;
@@ -54,7 +54,7 @@ public class Mfcc {
 	}
 	
 	
-	public float[] calculateFeaturesForWindow(float[] samples, int sampleStart, int sampleEnd, int numberOfFeatures) {
+	public double[] calculateFeaturesForWindow(double[] samples, int sampleStart, int sampleEnd, int numberOfFeatures) {
 		if (sampleStart < 0) {
 			sampleStart = 0;
 		}
@@ -67,7 +67,7 @@ public class Mfcc {
 			return null;
 		}
 		
-		float[] tmpSamples = new float[sampleEnd - sampleStart];
+		double[] tmpSamples = new double[sampleEnd - sampleStart];
 		for (int i = 0; i < tmpSamples.length; i++) {
 			tmpSamples[i] = samples[i + sampleStart];
 		}
@@ -77,12 +77,12 @@ public class Mfcc {
 		
 		FFT fft = new FFT();
 		fft.computeFFT(tmpSamples);
-		float[] powerSpectrum = fft.getSpectrum(); 
+		double[] powerSpectrum = fft.getSpectrum(); 
 		
-		float[] logEnergies = calculateLogEnergies(powerSpectrum);
-		float[] dct = DCT.performDCT(logEnergies);
+		double[] logEnergies = calculateLogEnergies(powerSpectrum);
+		double[] dct = DCT.performDCT(logEnergies);
 		
-		float[] features = new float[numberOfFeatures];
+		double[] features = new double[numberOfFeatures];
 		for (int i = 1; i <= numberOfFeatures; i++) {
 			features[i - 1] = dct[i];
 		}
@@ -90,32 +90,32 @@ public class Mfcc {
 		
 	}
 
-	public float[] calculateFeaturesForWindow(float[] samples) {
+	public double[] calculateFeaturesForWindow(double[] samples) {
 		return calculateFeaturesForWindow(samples, 0, samples.length, 12);
 	}
 	
-	private float calculateFilterBankLogEnergy(float[] samples, int melIdx) {
-		float res = 0.0f;
+	private double calculateFilterBankLogEnergy(double[] samples, int melIdx) {
+		double res = 0.0f;
 		for (int i = 0; i < samples.length / 2; i++) {
 			res += samples[i] * filterBank[melIdx][i];
 		}
-		return (float)Math.log(res);
+		return (double)Math.log(res);
 	}
 	
-	private float[] calculateLogEnergies(float[] powerSpectrum) {
-		float[] logEnergies = new float[melFilterCount];
+	private double[] calculateLogEnergies(double[] powerSpectrum) {
+		double[] logEnergies = new double[melFilterCount];
 		for (int i = 0; i < melFilterCount; i++) {
 			logEnergies[i] = calculateFilterBankLogEnergy(powerSpectrum, i);
 		}
 		return logEnergies;
 	}
 	
-	private float freqToMel(float frequency) {
-		return (float) (1125.0 * Math.log(1.0 + frequency / 700.0));
+	private double freqToMel(double frequency) {
+		return (double) (1125.0 * Math.log(1.0 + frequency / 700.0));
 	}
 	
-	private float melToFreq(float mel) {
-		float t = (float) Math.pow(Math.E, mel / 1125.0);
+	private double melToFreq(double mel) {
+		double t = (double) Math.pow(Math.E, mel / 1125.0);
 		return 700.0f * (t - 1.0f);
 	}
 }

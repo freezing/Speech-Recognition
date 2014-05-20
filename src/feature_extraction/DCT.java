@@ -2,8 +2,8 @@ package feature_extraction;
 
 public class DCT {
 
-	public static float[] performDCT(float samples[]) {
-		float[] res = new float[samples.length];
+	public static double[] performDCT(double samples[]) {
+		double[] res = new double[samples.length];
 		
 		for (int i = 1; i <= res.length; i++) {
 			res[i - 1] = 0.0f;

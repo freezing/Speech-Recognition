@@ -1,24 +1,25 @@
 package vector_quantization;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class KDPoint implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	protected float[] coordinates;
+	protected double[] coordinates;
 
-	public KDPoint(float[] coordinates) {
-		coordinates = this.coordinates;
+	public KDPoint(double[] coordinates) {
+		this.coordinates = coordinates;
 	}
 
 	public KDPoint(KDPoint point) {
-		coordinates = new float[point.getDimension()];
+		coordinates = new double[point.getDimension()];
 		for (int i = 0; i < coordinates.length; i++) {
 			coordinates[i] = point.getCoordinate(i);
 		}
 	}
 
-	public float getCoordinate(int idx) {
+	public double getCoordinate(int idx) {
 		return coordinates[idx];
 	}
 
@@ -32,9 +33,27 @@ public class KDPoint implements Serializable {
 		}
 
 		int idx = 0;
-		float distance = this.getDistance(points[0]);
+		double distance = this.getDistance(points[0]);
 		for (int i = 0; i < points.length; i++) {
-			float tmpDistance = this.getDistance(points[i]);
+			double tmpDistance = this.getDistance(points[i]);
+			if (tmpDistance < distance) {
+				distance = tmpDistance;
+				idx = i;
+			}
+		}
+
+		return idx;
+	}
+	
+	public int findNearestPoint(List<? extends KDPoint> points) throws Exception {
+		if (points.size() == 0) {
+			return -1;
+		}
+
+		int idx = 0;
+		double distance = this.getDistance(points.get(0));
+		for (int i = 0; i < points.size(); i++) {
+			double tmpDistance = this.getDistance(points.get(i));
 			if (tmpDistance < distance) {
 				distance = tmpDistance;
 				idx = i;
@@ -44,15 +63,15 @@ public class KDPoint implements Serializable {
 		return idx;
 	}
 
-	private float getDistance(KDPoint point) throws Exception {
+	private double getDistance(KDPoint point) throws Exception {
 		if (point.getDimension() != this.getDimension()) {
 			throw new Exception("Points must have the same dimensions, " + 
 				this.getDimension() + ", " + point.getDimension());
 		}
 		
-		float distance = 0.0f;
+		double distance = 0.0f;
 		for (int i = 0; i < this.getDimension(); i++) {
-			float d = this.getCoordinate(i) - point.getCoordinate(i);
+			double d = this.getCoordinate(i) - point.getCoordinate(i);
 			distance += d * d;
 		}
 		return distance;

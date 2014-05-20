@@ -4,17 +4,17 @@ package feature_extraction;
 public class FFT {
 	protected int numPoints;
 	
-	private float real[];
-	private float imag[];
-	private float magnitude[];
+	private double real[];
+	private double imag[];
+	private double magnitude[];
 	
-	public void computeFFT(float samples[]) {
+	public void computeFFT(double samples[]) {
 		numPoints = samples.length;
 
 		// initialize real and imag arrays
-		real = new float[numPoints];
-		imag = new float[numPoints];
-		magnitude = new float[numPoints];
+		real = new double[numPoints];
+		imag = new double[numPoints];
+		magnitude = new double[numPoints];
 		
 		// move the N point signal into the real part of the complex DFT's time domain
 		real = samples;
@@ -41,8 +41,8 @@ public class FFT {
 		for (int i = 1; i < numPoints - 2; i++) {
 			if (i < j) {
 				// swap
-				float tempReal = real[j];
-				float tempImag = imag[j];
+				double tempReal = real[j];
+				double tempImag = imag[j];
 				real[j] = real[i];
 				imag[j] = imag[i];
 				real[i] = tempReal;
@@ -74,8 +74,8 @@ public class FFT {
 				for (int butterfly = subDFT - 1; butterfly <= numPoints - 1; butterfly += LE) {
 					int ip = butterfly + LE2;
 					// butterfly calculation
-					float tempReal = (float) (real[ip] * UR - imag[ip] * UI);
-					float tempImag = (float) (real[ip] * UI + imag[ip] * UR);
+					double tempReal = (double) (real[ip] * UR - imag[ip] * UI);
+					double tempImag = (double) (real[ip] * UI + imag[ip] * UR);
 					real[ip] = real[butterfly] - tempReal;
 					imag[ip] = imag[butterfly] - tempImag;
 					real[butterfly] += tempReal;
@@ -94,15 +94,15 @@ public class FFT {
 		}
 	}
 	
-	public float[] getSpectrum() {
+	public double[] getSpectrum() {
 		return magnitude;
 	}
 	
-	public float[] getReal() {
+	public double[] getReal() {
 		return real;
 	}
 	
-	public float[] getImag() {
+	public double[] getImag() {
 		return imag;
 	}
 }

@@ -754,4 +754,10 @@ public class WavFile implements Serializable
 			e.printStackTrace();
 		}
 	}
+	
+	public double[] readWholeFile() throws IOException, WavFileException {
+		double[] buffer = new double[(int)(this.getNumFrames())];
+		readFrames(buffer, (int)(this.getNumFrames()));
+		return buffer;
+	}
 }

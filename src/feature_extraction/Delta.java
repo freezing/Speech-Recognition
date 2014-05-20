@@ -2,18 +2,18 @@ package feature_extraction;
 
 public class Delta {
 	
-	public static float[][] calculateDelta2D(float[][] data, int regressionWindowLength) {
+	public static double[][] calculateDelta2D(double[][] data, int regressionWindowLength) {
 		final int M = regressionWindowLength;
 		
 		int featureCount = data[0].length;
 		int frameCount = data.length;
 		
-		float mSquareSum = 0.0f;
+		double mSquareSum = 0.0f;
 		for (int i = -M; i < M; i++) {
 			mSquareSum += Math.pow(i, 2);
 		}
 		
-		float delta[][] = new float[frameCount][featureCount];
+		double delta[][] = new double[frameCount][featureCount];
 		for (int i = 0; i < featureCount; i++) {
 			for (int k = 0; k < M; k++) {
 				delta[k][i] = data[k][i];
@@ -23,8 +23,8 @@ public class Delta {
 				delta[k][i] = data[k][i];
 			}
 			
-			for (int j = M; j < frameCount; j++) {
-				float sumDataMulM = 0.0f;
+			for (int j = M; j < frameCount - M; j++) {
+				double sumDataMulM = 0.0f;
 				for (int m = -M; m <= M; m++) {
 					sumDataMulM += m * data[m + j][i];
 				}
@@ -34,17 +34,17 @@ public class Delta {
 		return delta;
 	}
 	
-	public static float[] calculateDelta1D(float[] data, int regressionWindowLength) {
+	public static double[] calculateDelta1D(double[] data, int regressionWindowLength) {
 		final int M = regressionWindowLength;
 		
 		int frameCount = data.length;
 		
-		float mSquareSum = 0.0f;
+		double mSquareSum = 0.0f;
 		for (int i = -M; i < M; i++) {
 			mSquareSum += Math.pow(i, 2);
 		}
 		
-		float[] delta = new float[frameCount];
+		double[] delta = new double[frameCount];
 		for (int k = 0; k < M; k++) {
 			delta[k] = data[k];
 		}
@@ -54,7 +54,7 @@ public class Delta {
 		}
 		
 		for (int j = M; j < frameCount - M; j++) {
-			float sumDataMulM = 0.0f;
+			double sumDataMulM = 0.0f;
 			for (int m = -M; m <= M; m++) {
 				sumDataMulM += m * data[m + j];
 			}

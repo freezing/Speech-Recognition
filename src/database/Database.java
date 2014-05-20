@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.LinkedList;
+import java.util.List;
 
 import database.model.CodebookModel;
 import database.model.HmmModel;
@@ -29,9 +31,26 @@ public class Database {
 	}
 	
 	public Database(String rootPath) {
-		this.rootFolder = new File(rootPath);
+		rootFolder = new File(rootPath);
 		if (!rootFolder.exists()) {
 			rootFolder.mkdir();
+		}
+		
+		rootPath = rootFolder.getAbsolutePath() + "/";
+		
+		hmmFolder = new File(rootPath + HMM_FOLDER_NAME);
+		if (!hmmFolder.exists()) {
+			hmmFolder.mkdir();
+		}
+		
+		codebookFolder = new File(rootPath + CODEBOOK_FOLDER_NAME);
+		if (!codebookFolder.exists()) {
+			codebookFolder.mkdir();
+		}
+		
+		trainingSetFolder = new File(rootPath + TRAINING_SET_FOLDER_NAME);
+		if (!trainingSetFolder.exists()) {
+			trainingSetFolder.mkdir();
 		}
 	}
 	
@@ -72,18 +91,17 @@ public class Database {
 		return null;
 	}
 	
-	public HmmModel[] loadHmmModels() {
+	public List<HmmModel> loadHmmModels() {
 		String[] folderList = hmmFolder.list();
-		HmmModel[] hmmModels = new HmmModel[folderList.length];
+		List<HmmModel> hmmModels = new LinkedList<>();
 		
-		int k = 0;
 		for (String folder : folderList) {
-			hmmModels[k++] = (HmmModel) load(HmmModel.class, folder, HmmModel.HMM_EXTENSION);
+			hmmModels.add( (HmmModel) load(HmmModel.class, folder, HmmModel.HMM_EXTENSION) );
 		}
 		return hmmModels;
 	}
 	
-	public TrainingSetFiles getTrainingSet() {
+	public TrainingSetFiles loadTrainingSet() {
 		TrainingSetFiles trainingSetFiles = new TrainingSetFiles();
 		String[] folders = trainingSetFolder.list();
 		

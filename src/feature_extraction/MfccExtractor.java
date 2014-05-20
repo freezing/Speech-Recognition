@@ -1,39 +1,39 @@
 package feature_extraction;
 
 public class MfccExtractor {
-	private float[][] framedSamples;
+	private double[][] framedSamples;
 	
 	private int frameCount;	
 	private int numCepstra = 12;
 	
-	private float[][] featureVectorValues;
-	private float[][] mfccFeature;
-	private float[][] deltaMfcc;
-	private float[][] deltaDeltaMfcc;
+	private double[][] featureVectorValues;
+	private double[][] mfccFeature;
+	private double[][] deltaMfcc;
+	private double[][] deltaDeltaMfcc;
 	
-	private float[] energy;
-	private float[] deltaEnergy;
-	private float[] deltaDeltaEnergy;
+	private double[] energy;
+	private double[] deltaEnergy;
+	private double[] deltaDeltaEnergy;
 	
 	private FeatureVector featureVector;
 	private Mfcc mfcc;
 	
-	public MfccExtractor(float[][] framedSamples, int sampleRate, int frameLength) {
+	public MfccExtractor(double[][] framedSamples, int sampleRate) {
 		this.framedSamples = framedSamples;
 		this.frameCount = framedSamples.length;
 		
-		mfcc = new Mfcc(frameLength, sampleRate, numCepstra);
+		mfcc = new Mfcc(framedSamples[0].length, sampleRate, numCepstra + 1);
 		featureVector = new FeatureVector();
 		
-		mfccFeature = new float[frameCount][numCepstra];
-		deltaMfcc = new float[frameCount][numCepstra];
-		deltaDeltaMfcc = new float[frameCount][numCepstra];
+		mfccFeature = new double[frameCount][numCepstra];
+		deltaMfcc = new double[frameCount][numCepstra];
+		deltaDeltaMfcc = new double[frameCount][numCepstra];
 		
-		energy = new float[frameCount];
-		deltaEnergy = new float[frameCount];
-		deltaDeltaEnergy = new float[frameCount];
+		energy = new double[frameCount];
+		deltaEnergy = new double[frameCount];
+		deltaDeltaEnergy = new double[frameCount];
 		
-		featureVectorValues = new float[frameCount][3 * (numCepstra + 1)];
+		featureVectorValues = new double[frameCount][3 * (numCepstra + 1)];
 	}
 	
 	public void makeFeatureVector() {
@@ -83,9 +83,9 @@ public class MfccExtractor {
 	}
 
 	private void normalizeCepstralFeatures() {
-		float sum;
-		float mean;
-		float mCeps[][] = new float[mfccFeature.length][mfccFeature[0].length];
+		double sum;
+		double mean;
+		double mCeps[][] = new double[mfccFeature.length][mfccFeature[0].length];
 		
 		for (int i = 0; i < mCeps[0].length; i++) {
 			// Calculate mean

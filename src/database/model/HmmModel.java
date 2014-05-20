@@ -9,7 +9,7 @@ public class HmmModel extends AbstractModel {
 	
 	private Hmm<ObservationInteger> hmm;
 	
-	public HmmModel(Hmm<ObservationInteger> hmm , String name) {
+	public HmmModel(Hmm<ObservationInteger> hmm, String name) {
 		super(name);
 		this.hmm = hmm;
 	}

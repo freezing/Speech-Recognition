@@ -1,90 +1,57 @@
 package app;
 
-import hmm.LeftRightHmm;
-
-import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
-
-import be.ac.ulg.montefiore.run.jahmm.ObservationInteger;
-import be.ac.ulg.montefiore.run.jahmm.OpdfIntegerFactory;
-import be.ac.ulg.montefiore.run.jahmm.learn.BaumWelchLearner;
+import mediators.Mediator;
 
 public class Main {
-	public static void main(String[] args) {
-		OpdfIntegerFactory factory = new OpdfIntegerFactory(5);
-		LeftRightHmm<ObservationInteger> hmm = new LeftRightHmm<ObservationInteger>(3, 2, factory);
-		
-		List<List<ObservationInteger>> train = new LinkedList<>();		
-		
-		train.add(new LinkedList<ObservationInteger>());
-		train.get(train.size() - 1).add(new ObservationInteger(1));
-		train.get(train.size() - 1).add(new ObservationInteger(1));
-		train.get(train.size() - 1).add(new ObservationInteger(1));
-		train.get(train.size() - 1).add(new ObservationInteger(2));
-		train.get(train.size() - 1).add(new ObservationInteger(3));
+	public static final String DATABASE_PATH = "/home/nikola/SpeechRecognitionDatabase";
+	
+	public static void main(String[] args) throws Exception {
+	/*	String rootpath = "/home/nikola/SpeechRecognitionTrainingData/Petar/";
+		String fileId = "2";
+		String filepath = rootpath + fileId + ".wav";
+		WavFile wav = WavFile.openWavFile(new File(filepath));
 
-		train.add(new LinkedList<ObservationInteger>());
-		train.get(train.size() - 1).add(new ObservationInteger(1));
-		train.get(train.size() - 1).add(new ObservationInteger(2));
-		train.get(train.size() - 1).add(new ObservationInteger(3));
+		double[] buffer = new double[(int) (wav.getNumChannels() * wav
+				.getNumFrames())];
+		int readFrames = wav.readFrames(buffer, (int) wav.getNumFrames());
+		wav.display();
 		
-		train.add(new LinkedList<ObservationInteger>());
-		train.get(train.size() - 1).add(new ObservationInteger(0));
-		train.get(train.size() - 1).add(new ObservationInteger(1));
-		train.get(train.size() - 1).add(new ObservationInteger(2));
+		System.out.println(Utils.timeToSamples(550, (int)wav.getSampleRate()));
 
-		train.add(new LinkedList<ObservationInteger>());
-		train.get(train.size() - 1).add(new ObservationInteger(1));
-		train.get(train.size() - 1).add(new ObservationInteger(2));
-		train.get(train.size() - 1).add(new ObservationInteger(2));
-		train.get(train.size() - 1).add(new ObservationInteger(2));
-		train.get(train.size() - 1).add(new ObservationInteger(3));
-		train.get(train.size() - 1).add(new ObservationInteger(3));
-		
-		train.add(new LinkedList<ObservationInteger>());
-		train.get(train.size() - 1).add(new ObservationInteger(1));
-		train.get(train.size() - 1).add(new ObservationInteger(2));
-		train.get(train.size() - 1).add(new ObservationInteger(2));
-		train.get(train.size() - 1).add(new ObservationInteger(2));
-		train.get(train.size() - 1).add(new ObservationInteger(2));
-		train.get(train.size() - 1).add(new ObservationInteger(3));
-
-		train.add(new LinkedList<ObservationInteger>());
-		train.get(train.size() - 1).add(new ObservationInteger(1));
-		train.get(train.size() - 1).add(new ObservationInteger(2));
-		train.get(train.size() - 1).add(new ObservationInteger(2));
-		train.get(train.size() - 1).add(new ObservationInteger(3));
-		train.get(train.size() - 1).add(new ObservationInteger(3));
-		
-		train.add(new LinkedList<ObservationInteger>());
-		train.get(train.size() - 1).add(new ObservationInteger(1));
-		train.get(train.size() - 1).add(new ObservationInteger(1));
-		train.get(train.size() - 1).add(new ObservationInteger(2));
-		train.get(train.size() - 1).add(new ObservationInteger(3));
-		
-		BaumWelchLearner learner = new BaumWelchLearner();
-		hmm = (LeftRightHmm<ObservationInteger>) learner.learn(hmm, train);
-		
-		List<ObservationInteger> oseq = new LinkedList<>();
-		oseq.add(new ObservationInteger(1));
-		oseq.add(new ObservationInteger(1));
-		oseq.add(new ObservationInteger(1));
-		oseq.add(new ObservationInteger(2));
-		oseq.add(new ObservationInteger(2));
-		oseq.add(new ObservationInteger(2));
-		oseq.add(new ObservationInteger(2));
-		oseq.add(new ObservationInteger(3));
-		oseq.add(new ObservationInteger(3));
-		oseq.add(new ObservationInteger(3));
-		oseq.add(new ObservationInteger(3));
-		
-		File file = new File("/home/nikola");
-		for (String s : file.list()) {
-			System.out.println(s);
+		FileWriter writer = new FileWriter(new File("/home/nikola/log.txt"));
+		for (int i = 0; i < readFrames; i++) {
+			if (buffer[i] > 1e-3) {
+				writer.write(i + "     " + buffer[i] + "\n");
+			}
+			else {
+				writer.write(i + "     0.000000" + "\n");
+			}
 		}
+		writer.close();
+
+		PreProcessor.normalizePCM(buffer);
+		EndPointDetection epd = new EndPointDetection(buffer,
+				(int) wav.getSampleRate());
+		List<Interval> words = epd.test();
+		for (Interval interval : words) {
+			System.out.println(interval);
+			System.out.println(Utils.samplesToTime(interval.getStart(), (int)wav.getSampleRate()));
+			System.out.println(Utils.samplesToTime(interval.getEnd(), (int)wav.getSampleRate()));
+		}
+
+		WavFile newWav = WavFile.newWavFile(new File(rootpath + fileId
+				+ "-endpoints.wav"), wav.getNumChannels(), words.get(0).length,
+				wav.getValidBits(), wav.getSampleRate());
 		
-		double p = hmm.lnProbability(oseq);
-		System.out.println(p);
+		newWav.writeFrames(words.get(0), words.get(0).length);
+		
+		newWav.close();
+		wav.close();
+*/
+		Mediator mediator = new Mediator(DATABASE_PATH);
+		mediator.generateCodebook();
+		mediator.saveCodebook();
+	/*	mediator.retrainAllHmms();
+		mediator.saveCurrentHmmModels();*/
 	}
 }

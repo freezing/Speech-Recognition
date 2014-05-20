@@ -1,30 +1,36 @@
 package vector_quantization;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Codebook implements Serializable {
 	private static final long serialVersionUID = 1L;
+	public static final int DEFAULT_SIZE = 256;
 	
-	private KDCluster[] clusters;
-	private KDPoint[] points;
-	private int codebookSize = 256;
+	private List<KDCluster> clusters;
+	private List<KDPoint> points;
+	private int codebookSize = DEFAULT_SIZE;
 	
-	public Codebook(KDPoint[] points, int codebookSize) {
+	public Codebook(List<KDPoint> points, int codebookSize) {
 		this.points = points;
 		this.codebookSize = codebookSize;
 	}
 	
 	public void initialize() throws Exception {
-		if (points.length < codebookSize) {
+		if (points.size() < codebookSize) {
 			throw new Exception("Not enough points to generate a codebook of size " + codebookSize);
 		}
 		
 		// TODO: Implement some clustering algorithm LGB (or only k-means) to cluster
 		// these points into clusters (default 256)
-		// for now just the simplest k-means is impleneted
-		clusters = new KDCluster[codebookSize];
-		for (int i = 0; i < clusters.length; i++) {
-			clusters[i] = new KDCluster(points[i]);
+		// for now just the simplest k-means is implemented
+		clusters = new LinkedList<>();
+		for (KDPoint point : points) {
+			clusters.add(new KDCluster(point));
+			if (clusters.size() == 256) {
+				break;
+			}
 		}
 		
 		// iterate 20 times and try to find better means
@@ -37,26 +43,30 @@ public class Codebook implements Serializable {
 		}
 	}	
 	
-	public int[] quantize(KDPoint[] points) throws Exception {
-		int quantizedPoints[] = new int[points.length];
-		for (int i = 0; i < points.length; i++) {
-			quantizedPoints[i] = points[i].findNearestPoint(clusters);
+	public int[] quantize(List<KDPoint> points) throws Exception {
+		int quantizedPoints[] = new int[points.size()];
+		for (int i = 0; i < points.size(); i++) {
+			quantizedPoints[i] = points.get(i).findNearestPoint(clusters);
 		}
 		return quantizedPoints;
 	}
 	
-	private void reasignPoints(KDCluster[] clusters, KDPoint[] points) throws Exception {
+	public int getSize() {
+		return codebookSize;
+	}
+	
+	private void reasignPoints(List<KDCluster> clusters, List<KDPoint> points) throws Exception {
 		for (KDCluster cluster : clusters) {
 			cluster.removeAllPoints();
 		}
 		
-		for (int i = 0; i < points.length; i++) {
-			int idx = points[i].findNearestPoint(clusters);
-			clusters[idx].addPoint(points[i]);
+		for (KDPoint point : points) {
+			int idx = point.findNearestPoint(clusters);
+			clusters.get(idx).addPoint(point);
 		}
 	}
 
-	private void updateClusters(KDCluster clusters[]) {
+	private void updateClusters(List<KDCluster> clusters) {
 		for (KDCluster cluster : clusters) {
 			cluster.update();
 		}
