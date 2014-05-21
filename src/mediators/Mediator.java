@@ -38,9 +38,9 @@ public class Mediator {
 
 	public Mediator(String databasePath) {
 		database = new Database(databasePath);
-	//	hmmModels = database.loadHmmModels();
-	/*	codebookModel = (CodebookModel) database.load(CodebookModel.class,
-				"codebook", CodebookModel.CODEBOOK_MODEL_EXTENSION);*/
+		hmmModels = database.loadHmmModels();
+		codebookModel = (CodebookModel) database.load(CodebookModel.class,
+				"codebook", CodebookModel.CODEBOOK_MODEL_EXTENSION);
 	}
 
 	public void generateCodebook() throws Exception {
@@ -104,13 +104,21 @@ public class Mediator {
 				List<KDPoint> points = featureVector.toKDPointList();
 				
 				int[] quantized = codebookModel.getCodebook().quantize(points);
+				if (entry.getKey().equals("Petar")) {
+					System.out.println(quantized.length);
+					for (int k : quantized) {
+						System.out.println(k);
+					}
+					System.out.println();
+					System.out.println();
+				}
 				List<ObservationInteger> observationList = makeObservationList(quantized);
 				trainingSet.add(observationList);
 			}
-			BaumWelchLearner learner = new BaumWelchLearner(); 
+			BaumWelchLearner learner = new BaumWelchLearner();
 			hmm = (LeftRightHmm<ObservationInteger>) learner.learn(hmm, trainingSet);
 			
-			HmmModel hmmModel = new HmmModel(hmm, entry.getKey());
+			HmmModel hmmModel = new HmmModel(hmm, entry.getKey());			
 			hmmModels.add(hmmModel);
 		}
 	}
@@ -123,6 +131,11 @@ public class Mediator {
 		FeatureVector featureVector = mfccExtractor.getFeatureVector();
 		int[] quantized = codebookModel.getCodebook().quantize(featureVector.toKDPointList());
 		List<ObservationInteger> oseq = makeObservationList(quantized);
+		
+		System.out.println("Search sequence:");
+		for (int k : quantized) {
+			System.out.println(k);
+		}
 		
 		String recognizedWord = null;
 		double probability = Double.MIN_VALUE;
@@ -150,5 +163,9 @@ public class Mediator {
 		for (HmmModel hmmModel : hmmModels) {
 			database.save(hmmModel);
 		}
+	}
+	
+	public Codebook getCodebook() {
+		return codebookModel.getCodebook();
 	}
 }

@@ -1,5 +1,8 @@
 package app;
 
+import java.io.File;
+
+import wav_file.WavFile;
 import mediators.Mediator;
 
 public class Main {
@@ -48,10 +51,16 @@ public class Main {
 		newWav.close();
 		wav.close();
 */
+		WavFile wav = WavFile.openWavFile(new File("/home/nikola/SpeechRecognitionDatabase/TrainingSet/Nikola/0.wav"));
+		int sampleRate = (int)wav.getSampleRate();
+		double[] samples = new double[(int) wav.getNumFrames()];
+		wav.readFrames(samples, samples.length);
+		
 		Mediator mediator = new Mediator(DATABASE_PATH);
 		mediator.generateCodebook();
 		mediator.saveCodebook();
-	/*	mediator.retrainAllHmms();
-		mediator.saveCurrentHmmModels();*/
+		mediator.retrainAllHmms();
+		mediator.saveCurrentHmmModels();
+		mediator.recognizeSpeech(samples, (int) wav.getSampleRate());
 	}
 }

@@ -92,11 +92,11 @@ public class Database {
 	}
 	
 	public List<HmmModel> loadHmmModels() {
-		String[] folderList = hmmFolder.list();
+		String[] modelList = hmmFolder.list();
 		List<HmmModel> hmmModels = new LinkedList<>();
 		
-		for (String folder : folderList) {
-			hmmModels.add( (HmmModel) load(HmmModel.class, folder, HmmModel.HMM_EXTENSION) );
+		for (String folder : modelList) {
+			hmmModels.add( (HmmModel) load(HmmModel.class, folder, "") );
 		}
 		return hmmModels;
 	}
