@@ -25,8 +25,8 @@ public class HMMTest {
 	
 	@Test
 	public void test2() throws Exception {
-		HiddenMarkov hmm = new HiddenMarkov(6, ENTRY_COUNT);
-		HiddenMarkov hmmPetar = new HiddenMarkov(6, ENTRY_COUNT);
+		HiddenMarkovModel hmm = new HiddenMarkovModel(6, ENTRY_COUNT);
+		HiddenMarkovModel hmmPetar = new HiddenMarkovModel(6, ENTRY_COUNT);
 		
 		Scanner sc = new Scanner(new File("/home/nikola/train"));
 		Scanner sc2 = new Scanner(new File("/home/nikola/train2"));

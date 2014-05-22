@@ -44,6 +44,9 @@ Please visit http://ocvolume.sourceforge.net.
 
 package hmm;
 
+import java.io.Serializable;
+import java.util.Arrays;
+
 /**
  * last updated on June 15, 2002<br>
  * <b>description:</b> this class represents a left-to-right Hidden Markov Model
@@ -60,7 +63,7 @@ package hmm;
  * @modified-by Ganesh Tiwari : DB Operations, Initialization of parameters
  *              Corrected last updated on Dec-27,2010
  */
-public class HiddenMarkov {
+public class HiddenMarkovModel implements Serializable {
 	/**
 	 * minimum probability
 	 */
@@ -376,6 +379,11 @@ public class HiddenMarkov {
 	public void setTrainSeq(int k, int trainSeq[]) {
 		obSeq[k] = trainSeq;
 	}
+	
+	public void setTrainSeq(int trainSeq[]) {
+		obSeq = new int[1][trainSeq.length];
+		obSeq[0] = Arrays.copyOf(trainSeq, trainSeq.length);
+	}
 
 	/**
 	 * set training sequences for re-estimation step<br>
@@ -520,7 +528,7 @@ public class HiddenMarkov {
 	 * @param num_symbols
 	 *            number of symbols per state
 	 */
-	public HiddenMarkov(int num_states, int num_symbols) {
+	public HiddenMarkovModel(int num_states, int num_symbols) {
 		this.num_states = num_states;
 		this.num_symbols = num_symbols;
 		transition = new double[num_states][num_states];

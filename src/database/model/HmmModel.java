@@ -1,15 +1,14 @@
 package database.model;
 
-import be.ac.ulg.montefiore.run.jahmm.Hmm;
-import be.ac.ulg.montefiore.run.jahmm.ObservationInteger;
+import hmm.HiddenMarkovModel;
 
 public class HmmModel extends AbstractModel {
 	public static final String HMM_EXTENSION = ".hmm";
 	private static final long serialVersionUID = 1L;
 	
-	private Hmm<ObservationInteger> hmm;
+	private HiddenMarkovModel hmm;
 	
-	public HmmModel(Hmm<ObservationInteger> hmm, String name) {
+	public HmmModel(HiddenMarkovModel hmm, String name) {
 		super(name);
 		this.hmm = hmm;
 	}
@@ -19,11 +18,11 @@ public class HmmModel extends AbstractModel {
 		return HMM_EXTENSION;
 	}
 	
-	public Hmm<ObservationInteger> getHmm() {
+	public HiddenMarkovModel getHmm() {
 		return hmm;
 	}
 	
-	public void setHmm(Hmm<ObservationInteger> hmm) {
+	public void setHmm(HiddenMarkovModel hmm) {
 		this.hmm = hmm;
 	}
 

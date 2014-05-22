@@ -756,8 +756,20 @@ public class WavFile implements Serializable
 	}
 	
 	public double[] readWholeFile() throws IOException, WavFileException {
-		double[] buffer = new double[(int)(this.getNumFrames())];
+		double[] buffer = new double[(int)(this.getNumFrames()) * this.getNumChannels()];
 		readFrames(buffer, (int)(this.getNumFrames()));
-		return buffer;
+		
+		this.readFrames(buffer, (int) this.getNumFrames());
+		
+		double[] samples = new double[(int)this.getNumFrames()];
+		for (int i = 0; i < samples.length; i++) {
+			samples[i] = 0.0;
+			for (int j = this.getNumChannels() * i; j < (i + 1) * this.getNumChannels(); j++) {
+				samples[i] += buffer[j];
+			}
+			samples[i] /= this.getNumChannels();
+		}
+		
+		return samples;
 	}
 }

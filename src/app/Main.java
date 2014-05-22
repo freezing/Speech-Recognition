@@ -2,6 +2,7 @@ package app;
 
 import java.io.File;
 
+import preprocessing.PreProcessor;
 import wav_file.WavFile;
 import mediators.Mediator;
 
@@ -51,16 +52,26 @@ public class Main {
 		newWav.close();
 		wav.close();
 */
-		WavFile wav = WavFile.openWavFile(new File("/home/nikola/SpeechRecognitionDatabase/TrainingSet/Nikola/0.wav"));
+		WavFile wav = WavFile.openWavFile(new File("/home/nikola/SpeechRecognitionTrainingData/Nikola/10.wav"));
 		int sampleRate = (int)wav.getSampleRate();
-		double[] samples = new double[(int) wav.getNumFrames()];
-		wav.readFrames(samples, samples.length);
+		double[] samples = wav.readWholeFile();
+		
+		PreProcessor.normalizePCM(samples);
 		
 		Mediator mediator = new Mediator(DATABASE_PATH);
-		mediator.generateCodebook();
-		mediator.saveCodebook();
-		mediator.retrainAllHmms();
-		mediator.saveCurrentHmmModels();
-		mediator.recognizeSpeech(samples, (int) wav.getSampleRate());
+	//	mediator.addWordAndTrainModel("Stolica", samples, sampleRate);
+	//	mediator.saveCurrentHmmModels();
+	//	mediator.generateCodebook();
+	//	mediator.saveCodebook();
+	//	mediator.retrainAllHmms();
+	//	mediator.saveCurrentHmmModels();
+		String word = mediator.recognizeSpeech(samples, (int) wav.getSampleRate());
+		System.out.println(word);
+		/*
+		WavFile wavFile = WavFile.newWavFile(new File("/home/nikola/SpeechRecognitionTrainingData/Nikola/15.wav"), 1, 
+				(int) wav.getNumFrames(), wav.getValidBits(), wav.getSampleRate());
+		
+		wavFile.writeFrames(samples, (int)wav.getNumFrames());
+		wavFile.close();*/
 	}
 }
