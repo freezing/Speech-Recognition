@@ -10,7 +10,7 @@ public class PreProcessor {
 		}
 
 		for (int i = 0; i < originalSignal.length; i++) {
-			originalSignal[i] = originalSignal[i] * max;
+			originalSignal[i] = originalSignal[i] / max;
 		}
 	}
 }

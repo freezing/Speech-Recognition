@@ -327,8 +327,7 @@ import wav_file.WavFileException;
                 for (int i=0; i<m_nnumberOfParameters; i++) {   
                     dMFCCParameters[i] *= m_nlifteringMultiplicationFactor[i];   
                 }   
-            }   
-       
+            }
             return dMFCCParameters;   
         } //end method   
        

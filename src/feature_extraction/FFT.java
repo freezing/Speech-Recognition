@@ -17,7 +17,7 @@ public class FFT {
 		magnitude = new double[numPoints];
 		
 		// move the N point signal into the real part of the complex DFT's time domain
-		real = samples;
+		real = samples.clone();
 		// set all of the samples in the imaginary part to zero
 		for (int i = 0; i < imag.length; i++) {
 			imag[i] = 0;

@@ -3,62 +3,32 @@ package app;
 import java.io.File;
 
 import preprocessing.PreProcessor;
+import voice_activity_detection.EndPointDetection;
 import wav_file.WavFile;
 import mediators.Mediator;
 
 public class Main {
 	public static final String DATABASE_PATH = "/home/nikola/SpeechRecognitionDatabase";
 	
-	public static void main(String[] args) throws Exception {
-	/*	String rootpath = "/home/nikola/SpeechRecognitionTrainingData/Petar/";
-		String fileId = "2";
-		String filepath = rootpath + fileId + ".wav";
-		WavFile wav = WavFile.openWavFile(new File(filepath));
-
-		double[] buffer = new double[(int) (wav.getNumChannels() * wav
-				.getNumFrames())];
-		int readFrames = wav.readFrames(buffer, (int) wav.getNumFrames());
-		wav.display();
-		
-		System.out.println(Utils.timeToSamples(550, (int)wav.getSampleRate()));
-
-		FileWriter writer = new FileWriter(new File("/home/nikola/log.txt"));
-		for (int i = 0; i < readFrames; i++) {
-			if (buffer[i] > 1e-3) {
-				writer.write(i + "     " + buffer[i] + "\n");
-			}
-			else {
-				writer.write(i + "     0.000000" + "\n");
-			}
-		}
-		writer.close();
-
-		PreProcessor.normalizePCM(buffer);
-		EndPointDetection epd = new EndPointDetection(buffer,
-				(int) wav.getSampleRate());
-		List<Interval> words = epd.test();
-		for (Interval interval : words) {
-			System.out.println(interval);
-			System.out.println(Utils.samplesToTime(interval.getStart(), (int)wav.getSampleRate()));
-			System.out.println(Utils.samplesToTime(interval.getEnd(), (int)wav.getSampleRate()));
-		}
-
-		WavFile newWav = WavFile.newWavFile(new File(rootpath + fileId
-				+ "-endpoints.wav"), wav.getNumChannels(), words.get(0).length,
-				wav.getValidBits(), wav.getSampleRate());
-		
-		newWav.writeFrames(words.get(0), words.get(0).length);
-		
-		newWav.close();
-		wav.close();
-*/
-		WavFile wav = WavFile.openWavFile(new File("/home/nikola/SpeechRecognitionTrainingData/Nikola/10.wav"));
+	public static void main(String[] args) throws Exception {		
+		Mediator mediator = new Mediator(DATABASE_PATH);
+				
+		WavFile wav = WavFile.openWavFile(new File("/home/nikola/SpeechRecognitionTrainingData/Nikola/5.wav"));
 		int sampleRate = (int)wav.getSampleRate();
 		double[] samples = wav.readWholeFile();
 		
 		PreProcessor.normalizePCM(samples);
+		for (int i = 0; i < samples.length; i++) {
+		/*	samples[i] += 0.1;
+			if (samples[i] > 1.0) samples[i] = 1.0;*/
+		}
 		
-		Mediator mediator = new Mediator(DATABASE_PATH);
+	/*	double[] tmp = mediator.getVoicedSamples(samples, (int)wav.getSampleRate());
+		WavFile newWav = WavFile.newWavFile(new File("/home/nikola/test.wav"), 1, tmp.length, wav.getValidBits(), (int)wav.getSampleRate());
+		newWav.writeFrames(tmp, tmp.length);
+		newWav.close();*/
+	//	mediator.retrainVad();
+	//	mediator.saveVad();
 	//	mediator.addWordAndTrainModel("Stolica", samples, sampleRate);
 	//	mediator.saveCurrentHmmModels();
 	//	mediator.generateCodebook();
@@ -67,11 +37,11 @@ public class Main {
 	//	mediator.saveCurrentHmmModels();
 		String word = mediator.recognizeSpeech(samples, (int) wav.getSampleRate());
 		System.out.println(word);
-		/*
+		
 		WavFile wavFile = WavFile.newWavFile(new File("/home/nikola/SpeechRecognitionTrainingData/Nikola/15.wav"), 1, 
 				(int) wav.getNumFrames(), wav.getValidBits(), wav.getSampleRate());
 		
 		wavFile.writeFrames(samples, (int)wav.getNumFrames());
-		wavFile.close();*/
+		wavFile.close();
 	}
 }

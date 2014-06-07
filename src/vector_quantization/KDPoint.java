@@ -1,6 +1,7 @@
 package vector_quantization;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 public class KDPoint implements Serializable {
@@ -75,5 +76,10 @@ public class KDPoint implements Serializable {
 			distance += d * d;
 		}
 		return distance;
+	}
+	
+	@Override
+	public String toString() {
+		return Arrays.toString(coordinates);
 	}
 }

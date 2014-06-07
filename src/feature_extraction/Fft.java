@@ -96,7 +96,7 @@ package feature_extraction;
        
             for (i=1;i<n/2;i++) {   
                 mag[i] = Math.sqrt(x[i]*x[i]+x[n-i]*x[n-i]);   
-                //System.out.println(mag[i] + " " + x[i] + " " + x[n-i]);   
+                //System.out.println(mag[i] + " " + x[i] + " " + x[n-i]);  
             }   
        
             //IO.DisplayVector(mag);   

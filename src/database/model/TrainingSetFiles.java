@@ -12,6 +12,9 @@ public class TrainingSetFiles {
 	}
 	
 	public void addSet(File folder) {
+		if (folder.isFile()) {
+			return;
+		}
 		trainingSets.put(folder.getName(), folder.listFiles());
 	}
 	

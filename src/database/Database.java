@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import database.model.CodebookModel;
 import database.model.HmmModel;
 import database.model.Model;
 import database.model.TrainingSetFiles;
+import database.model.VadModel;
 
 public class Database {
 	public static String DEFAULT_PATH = "/home/nikola/SpeechTest/";
@@ -20,11 +22,13 @@ public class Database {
 	public static String TRAINING_SET_FOLDER_NAME = "TrainingSet";
 	public static String CODEBOOK_FOLDER_NAME = "Codebook";
 	public static String HMM_FOLDER_NAME = "HiddenMarkovModels";
+	public static String VAD_FOLDER_NAME = "Vad";
 	
 	private File rootFolder;
 	private File trainingSetFolder;
 	private File codebookFolder;
 	private File hmmFolder;
+	private File vadFolder;
 	
 	public Database() {
 		this(DEFAULT_PATH);
@@ -51,6 +55,11 @@ public class Database {
 		trainingSetFolder = new File(rootPath + TRAINING_SET_FOLDER_NAME);
 		if (!trainingSetFolder.exists()) {
 			trainingSetFolder.mkdir();
+		}
+		
+		vadFolder = new File(rootPath + VAD_FOLDER_NAME);
+		if (!vadFolder.exists()) {
+			vadFolder.mkdir();
 		}
 	}
 	
@@ -111,12 +120,25 @@ public class Database {
 		return trainingSetFiles;
 	}
 	
+	public TrainingSetFiles loadVadTrainingSet() {
+		TrainingSetFiles trainingSetFiles = new TrainingSetFiles();
+		String[] folders = vadFolder.list();
+
+		for (String folder : folders) {
+			trainingSetFiles.addSet(new File(vadFolder.getAbsoluteFile() + "/" + folder));
+		}
+		return trainingSetFiles;
+	}
+	
 	private File getFolder(Class clazz) {
 		if (clazz.equals(HmmModel.class)) {
 			return hmmFolder;
 		}
 		else if (clazz.equals(CodebookModel.class)) { 
 			return codebookFolder;
+		}
+		else if (clazz.equals(VadModel.class)) {
+			return vadFolder;
 		}
 		else {
 			return null;
