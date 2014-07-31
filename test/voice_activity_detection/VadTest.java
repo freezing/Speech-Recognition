@@ -2,14 +2,12 @@ package voice_activity_detection;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.junit.Test;
 
 import preprocessing.PreProcessor;
 import wav_file.WavFile;
 import wav_file.WavFileException;
-import feature_extraction.FFT;
 import feature_extraction.FrameExtractor;
 import feature_extraction.Utils;
 

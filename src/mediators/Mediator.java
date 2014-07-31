@@ -17,14 +17,11 @@ import vector_quantization.KDPoint;
 import voice_activity_detection.VoiceActivityDetector;
 import wav_file.WavFile;
 import wav_file.WavFileException;
-import be.ac.ulg.montefiore.run.jahmm.ObservationInteger;
 import database.Database;
 import database.model.CodebookModel;
 import database.model.HmmModel;
 import database.model.TrainingSetFiles;
 import database.model.VadModel;
-import feature_extraction.Delta;
-import feature_extraction.Energy;
 import feature_extraction.FeatureVector;
 import feature_extraction.FrameExtractor;
 import feature_extraction.MFCC;
@@ -287,14 +284,6 @@ public class Mediator {
 			}
 		}		
 		return recognizedWord;
-	}
-
-	private List<ObservationInteger> makeObservationList(int[] quantized) {
-		List<ObservationInteger> observationList = new LinkedList<>();
-		for (int i = 0; i < quantized.length; i++) {
-			observationList.add(new ObservationInteger(quantized[i]));
-		}
-		return observationList;
 	}
 
 	public void saveCurrentHmmModels() {

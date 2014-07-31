@@ -16,10 +16,10 @@ public class MfccExtractor {
 	private double[] deltaDeltaEnergy;
 	
 	private FeatureVector featureVector;
-	private Mfcc mfcc;
+//	private Mfcc mfcc;
 	
 	public MfccExtractor(double[][] framedSamples, int sampleRate) {
-		this.framedSamples = framedSamples;
+	/*	this.framedSamples = framedSamples;
 		this.frameCount = framedSamples.length;
 		
 		mfcc = new Mfcc(framedSamples[0].length, sampleRate, numCepstra + 1);
@@ -33,7 +33,7 @@ public class MfccExtractor {
 		deltaEnergy = new double[frameCount];
 		deltaDeltaEnergy = new double[frameCount];
 		
-		featureVectorValues = new double[frameCount][3 * (numCepstra + 1)];
+		featureVectorValues = new double[frameCount][3 * (numCepstra + 1)];*/
 	}
 	
 	public void makeFeatureVector() {
@@ -109,7 +109,7 @@ public class MfccExtractor {
 
 	private void makeMfccFeatures() {
 		for (int i = 0; i < frameCount; i++) {
-			mfccFeature[i] = mfcc.calculateFeaturesForWindow(framedSamples[i]);
+		//	mfccFeature[i] = mfcc.calculateFeaturesForWindow(framedSamples[i]);
 		}
 	}
 	

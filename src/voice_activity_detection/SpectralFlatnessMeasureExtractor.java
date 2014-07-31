@@ -1,14 +1,12 @@
 package voice_activity_detection;
 
-import feature_extraction.FFT;
+import feature_extraction.Fft;
 import feature_extraction.WindowFunctions;
 
 public class SpectralFlatnessMeasureExtractor {
 	
-	private FFT fft;
-	
 	public SpectralFlatnessMeasureExtractor() {
-		fft = new FFT();
+		
 	}
 	
 	/**
@@ -16,8 +14,7 @@ public class SpectralFlatnessMeasureExtractor {
 	 */
 	public double extractSpectralFlatnessMeasure(double[] samples) {
 		double[] windowedSamples = WindowFunctions.applyWindowFunction(samples);
-		fft.computeFFT(windowedSamples);
-		double[] spectrum = fft.getSpectrum();		
+		double[] spectrum = new Fft(windowedSamples.length).calculateFFTMagnitude(windowedSamples);		
 		return getSFMFromSpectrum(spectrum);
 	}
 
