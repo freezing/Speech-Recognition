@@ -1,7 +1,6 @@
 package hmm;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,14 +10,11 @@ import mediators.Mediator;
 
 import org.junit.Test;
 
+import vector_quantization.KDPoint;
+import wav_file.WavFile;
 import feature_extraction.FeatureVector;
 import feature_extraction.FrameExtractor;
 import feature_extraction.MfccExtractor;
-import vector_quantization.KDPoint;
-import voice_activity_detection.EndPointDetection;
-import wav_file.WavFile;
-import wav_file.WavFileException;
-import app.Main;
 
 public class HMMTest {
 	static final int ENTRY_COUNT = 256;
@@ -66,7 +62,7 @@ public class HMMTest {
 		hmmPetar.setTrainSeq(train2);
 		hmmPetar.train();
 		
-		Mediator mediator = new Mediator(Main.DATABASE_PATH);
+		Mediator mediator = Mediator.getInstance();
 		mediator.generateCodebook();
 		
 		WavFile wav = WavFile.openWavFile(new File("/home/nikola/SpeechRecognitionTrainingData/Nikola/5.wav"));

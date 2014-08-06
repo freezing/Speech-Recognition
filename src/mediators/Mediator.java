@@ -11,9 +11,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.sound.sampled.AudioInputStream;
+
 import preprocessing.PreProcessor;
 import vector_quantization.Codebook;
 import vector_quantization.KDPoint;
+import voice_activity_detection.EndPointDetector2;
 import voice_activity_detection.VoiceActivityDetector;
 import wav_file.WavFile;
 import wav_file.WavFileException;
@@ -27,6 +30,9 @@ import feature_extraction.FrameExtractor;
 import feature_extraction.MFCC;
 
 public class Mediator {
+	public static final String DATABASE_PATH = "e:\\BigData\\SpeechRecognition\\SpeechRecognitionDatabase\\";
+			// e:\\SpeechRecognitionDatabase\\";
+	
 	public static final int FRAME_LENGTH = 512;
 	public static final int STEP_LENGTH = 160;
 	
@@ -35,6 +41,15 @@ public class Mediator {
 	
 	public static final int HMM_STATES = 6;
 	public static final int HMM_DELTA = 2;
+	
+	private static Mediator instance = null;
+	
+	public static Mediator getInstance() {
+		if (instance == null) {
+			instance = new Mediator(DATABASE_PATH);
+		}
+		return instance;
+	}
 
 	private Database database;
 	private List<HmmModel> hmmModels;
@@ -42,13 +57,16 @@ public class Mediator {
 	private CodebookModel codebookModel;
 	private VadModel vadModel;
 
-	public Mediator(String databasePath) {
+	private Mediator(String databasePath) {
 		database = new Database(databasePath);
 		hmmModels = database.loadHmmModels();
 		initializeHmmNameToIndex();
-		codebookModel = (CodebookModel) database.load(CodebookModel.class,
+		Object codebookObj = database.load(CodebookModel.class,
 				"codebook", CodebookModel.CODEBOOK_MODEL_EXTENSION);
-		vadModel = (VadModel) database.load(VadModel.class, "vad", VadModel.VAD_MODEL_EXTENSION);
+		
+		if (codebookObj != null) {
+			codebookModel = (CodebookModel) codebookObj;
+		}
 	}
 
 	private void initializeHmmNameToIndex() {
@@ -292,6 +310,10 @@ public class Mediator {
 		}
 	}
 	
+	public boolean hasCodebook() {
+		return codebookModel != null;
+	}
+	
 	public Codebook getCodebook() {
 		return codebookModel.getCodebook();
 	}
@@ -302,5 +324,9 @@ public class Mediator {
 
 	public void saveVad() {
 		database.save(vadModel);
+	}
+
+	public void addTrainingData(String word, AudioInputStream audioInputStream) {
+		database.saveWavFile(audioInputStream, word);
 	}
 }

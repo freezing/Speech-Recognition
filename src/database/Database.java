@@ -6,9 +6,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
 
 import database.model.CodebookModel;
 import database.model.HmmModel;
@@ -56,11 +59,6 @@ public class Database {
 		if (!trainingSetFolder.exists()) {
 			trainingSetFolder.mkdir();
 		}
-		
-		vadFolder = new File(rootPath + VAD_FOLDER_NAME);
-		if (!vadFolder.exists()) {
-			vadFolder.mkdir();
-		}
 	}
 	
 	public void save(Model model) {
@@ -80,11 +78,42 @@ public class Database {
 			System.err.println(e);
 		}
 	}
+	
+	public void saveWavFile(AudioInputStream ais, String wordValue) {
+		String folderPath = trainingSetFolder.getAbsolutePath() + "/" + wordValue;
+		
+		File folder = new File(folderPath);
+		if (!folder.exists()) {
+			folder.mkdir();
+		}
+		
+		int nextValue = getNextValue(folder);
+		File wavFile = new File(folder.getAbsolutePath() + "/" + nextValue + ".wav");
+		
+		if (AudioSystem.isFileTypeSupported(AudioFileFormat.Type.WAVE, ais)) {
+			try {
+				ais.reset();
+				AudioSystem.write(ais, AudioFileFormat.Type.WAVE, wavFile);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+	}
+
+	private int getNextValue(File folder) {
+		return folder.list().length;
+	}
 
 	public Model load(Class clazz, String name, String extension) {
 		File folder = getFolder(clazz);
 		try {
 			File file = new File(folder.getAbsoluteFile() + "/" + name + extension);
+			
+			if (!file.exists()) {
+				return null;
+			}
+			
 			FileInputStream fileIn = new FileInputStream(file);
 			ObjectInputStream in = new ObjectInputStream(fileIn);
 			
