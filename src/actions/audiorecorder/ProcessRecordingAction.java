@@ -5,7 +5,6 @@ import gui.AddWordsFrame;
 import java.awt.event.ActionEvent;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,14 +14,10 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.swing.AbstractAction;
 
-import mediators.Mediator;
 import model.Recording;
-import threads.Capture;
 import utility.Utils;
 import voice_activity_detection.EndPointDetector2;
 import voice_activity_detection.Interval;
-import wav_file.WavFile;
-import wav_file.WavFileException;
 
 public class ProcessRecordingAction extends AbstractAction {
 	private static final long serialVersionUID = 1L;
@@ -47,9 +42,12 @@ public class ProcessRecordingAction extends AbstractAction {
 				samplesAIS, 10, 10);
 		
 		for (int i = 0; i < intervals.size(); i++) {
-			AudioInputStream slice = Utils.saveWavFile("D:\\tmp\\" + i + ".wav", 
+		/*	AudioInputStream slice = Utils.saveWavFile("D:\\tmp\\" + i + ".wav", 
 					AddWordsFrame.getInstance().getCapture().getAudioBytes(), intervals.get(i),
-					Utils.getAudioFormat());
+					Utils.getAudioFormat());*/
+			AudioInputStream slice = Utils.getAudioInputStreamSlice(
+					AddWordsFrame.getInstance().getCapture().getAudioBytes(),
+					intervals.get(i), Utils.getAudioFormat());
 			audioInputStreams.add(slice);
 		}
 		AddWordsFrame.getInstance().showEndPoints(intervals, audioInputStreams);

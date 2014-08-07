@@ -16,7 +16,12 @@ public class SpeechRecognizerTest {
 	
 	@Test
 	public void test() throws Exception {
-		String filepath = "D:\\tmp\\0.wav";
+		Mediator.getInstance().generateCodebook();
+		Mediator.getInstance().saveCodebook();
+		Mediator.getInstance().retrainAllHmms();
+		Mediator.getInstance().saveCurrentHmmModels();
+		
+		String filepath = "D:\\tmp\\1.wav";
 		WavFile wavFile = WavFile.openWavFile(new File(filepath));
 		
 		double[] samples = wavFile.readWholeFile();

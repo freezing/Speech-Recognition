@@ -30,7 +30,7 @@ import feature_extraction.FrameExtractor;
 import feature_extraction.MFCC;
 
 public class Mediator {
-	public static final String DATABASE_PATH = "e:\\BigData\\SpeechRecognition\\SpeechRecognitionDatabase\\";
+	public static final String DATABASE_PATH = "e:\\SpeechRecognitionDatabase\\";
 			// e:\\SpeechRecognitionDatabase\\";
 	
 	public static final int FRAME_LENGTH = 512;
@@ -269,7 +269,7 @@ public class Mediator {
 			HiddenMarkovModel hmm = new HiddenMarkovModel(HMM_STATES, codebookModel.getCodebook().getSize());
 			hmm.setTrainSeq(trainingSet);
 			hmm.train();
-			HmmModel hmmModel = new HmmModel(hmm, entry.getKey());			
+			HmmModel hmmModel = new HmmModel(hmm, entry.getKey());
 			hmmModels.add(hmmModel);
 		}
 	}
@@ -295,7 +295,7 @@ public class Mediator {
 		
 		for (HmmModel hmmModel : hmmModels) {
 			double tmpProbability = hmmModel.getHmm().viterbi(quantized);
-			System.out.println(hmmModel.getName() + "   " + tmpProbability);
+			//System.out.println(hmmModel.getName() + "   " + tmpProbability);
 			if (tmpProbability > probability) {
 				probability = tmpProbability;
 				recognizedWord = hmmModel.getName();

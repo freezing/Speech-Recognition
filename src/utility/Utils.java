@@ -131,7 +131,7 @@ public class Utils {
 		return null;
 	}
 
-	private static AudioInputStream getAudioInputStreamSlice(byte[] audioBytes,
+	public static AudioInputStream getAudioInputStreamSlice(byte[] audioBytes,
 			Interval interval, AudioFormat format) {
 		int frameSize = format.getFrameSize();
 		

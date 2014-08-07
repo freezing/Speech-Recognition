@@ -39,27 +39,37 @@ public class TrainAction extends AbstractAction {
 				System.out.println("Generating codebook...");
 				Mediator.getInstance().generateCodebook();
 				Mediator.getInstance().saveCodebook();
-				System.out.println("Codebook saved...");
+				System.out.println("==========Codebook saved==========");
+				
+				System.out.println("Retraining all HMM Models...");
+				try {
+					Mediator.getInstance().retrainAllHmms();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				System.out.println("==========Retraining finished=========");
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
-		
-		for (int i = 0; i < intervalsToUse.length; i++) {
-			if (intervalsToUse[i]) {
-				int sampleRate = (int) audioInputStreams.get(i).getFormat().getSampleRate();
-				double[] samples = Utils.getSamples(audioInputStreams.get(i));
-				String word = words.get(i);
-				
-				try {
-					System.out.println("Training: " + word);
-					Mediator.getInstance().addWordAndTrainModel(word, samples, sampleRate);
-					System.out.println("Training finished....");
-					System.out.println("========================");
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+		else {		
+			for (int i = 0; i < intervalsToUse.length; i++) {
+				if (intervalsToUse[i]) {
+					int sampleRate = (int) audioInputStreams.get(i).getFormat().getSampleRate();
+					double[] samples = Utils.getSamples(audioInputStreams.get(i));
+					String word = words.get(i);
+					
+					try {
+						System.out.println("Training: " + word);
+						Mediator.getInstance().addWordAndTrainModel(word, samples, sampleRate);
+						System.out.println("Training finished....");
+						System.out.println("========================");
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 		}

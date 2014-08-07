@@ -412,14 +412,14 @@ public class HiddenMarkovModel implements Serializable {
 		// NOTE: should be changed to re-estimate until no more improvement
 		for (int i = 0; i < 20; i++) {
 			reestimate();
-			System.out.println("reestimating.....");
+			System.out.println("reestimating(" + i + ").....");
 		}
 		//
 		// oldm=
 	}
 
 	/**
-	 * Baum-Welch Algorithm - Re-estimate (iterative udpate and improvement) of
+	 * Baum-Welch Algorithm - Re-estimate (iterative update and improvement) of
 	 * HMM parameters<br>
 	 * calls: none<br>
 	 * called by: trainHMM
