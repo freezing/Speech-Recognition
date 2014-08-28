@@ -22,7 +22,15 @@ public class RetrainAllHmmsAction extends AbstractAction  {
 		    		"Are you sure?", JOptionPane.YES_NO_OPTION);
 		    if (answer == JOptionPane.YES_OPTION) {
 		    	// User clicked YES.
-		    	Mediator.getInstance().retrainAllHmms();		    	
+		    	System.out.println("Generating codebook...");
+		    	Mediator.getInstance().generateCodebook();
+		    	System.out.println("Saving codebook...");
+		    	Mediator.getInstance().saveCodebook();
+		    	System.out.println("Retraining all HMMs...");
+		    	Mediator.getInstance().retrainAllHmms();
+		    	System.out.println("Saving all HMMs...");
+		    	Mediator.getInstance().saveCurrentHmmModels();
+		    	System.out.println("Finished...");
 		    }
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block

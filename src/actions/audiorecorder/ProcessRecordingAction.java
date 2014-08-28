@@ -38,8 +38,8 @@ public class ProcessRecordingAction extends AbstractAction {
 
 		List<Interval> intervals = new ArrayList<>();
 		List<AudioInputStream> audioInputStreams = new ArrayList<>();
-		intervals = new EndPointDetector2(20, (int)format.getSampleRate()).detectEndPoints(
-				samplesAIS, 10, 10);
+		intervals = new EndPointDetector2(20, (int)format.getSampleRate())
+			.detectEndPoints(samplesAIS, 10, 10, 250, 300, 180);
 		
 		for (int i = 0; i < intervals.size(); i++) {
 		/*	AudioInputStream slice = Utils.saveWavFile("D:\\tmp\\" + i + ".wav", 

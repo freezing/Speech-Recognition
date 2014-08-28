@@ -20,6 +20,8 @@ import model.Recording;
 import threads.Capture;
 import voice_activity_detection.Interval;
 import actions.CheckBoxWordAction;
+import actions.ProcessWavFileAction;
+import actions.RetrainAllHmmsAction;
 import actions.TrainAction;
 import actions.audiorecorder.PlayRecordingAction;
 import actions.audiorecorder.ProcessRecordingAction;
@@ -34,6 +36,8 @@ public class AddWordsFrame extends JFrame implements WindowListener {
 	private JButton recordButton;
 	private JButton stopButton;
 	private JButton processButton;
+	private JButton processFileButton;
+	private JButton retrainAllButton;
 	
 	private JButton trainButton;
 	
@@ -92,11 +96,19 @@ public class AddWordsFrame extends JFrame implements WindowListener {
 		processButton = new JButton(new ProcessRecordingAction());
 		processButton.setText("Process recorded audio");
 		
+		processFileButton = new JButton(new ProcessWavFileAction());
+		processFileButton.setText("Train using WAV file");
+		
+		retrainAllButton = new JButton(new RetrainAllHmmsAction());
+		retrainAllButton.setText("Retrain all");
+		
 		setInitialState();
 		
 		container.add(recordButton);		
 		container.add(stopButton);
 		container.add(processButton);
+		container.add(processFileButton);
+		container.add(retrainAllButton);
 		
 		wordsContainer = new JPanel();
 		wordsContainer.setSize((int) this.getSize().getWidth(), 600);
@@ -120,7 +132,7 @@ public class AddWordsFrame extends JFrame implements WindowListener {
 
 	@Override
 	public void windowClosed(WindowEvent e) {
-		TrainFrame.getInstance().setVisible(true);
+		MainFrame.getInstance().setVisible(true);
 	}
 
 	@Override
@@ -184,7 +196,7 @@ public class AddWordsFrame extends JFrame implements WindowListener {
 		wordValues = new ArrayList<>();
 		Arrays.fill(intervalsToUse, true);
 		
-		infoLabel.setText("Voice Activity Detector has recognized " + intervals.size() + " words.");
+		infoLabel.setText("Voice Activity Detector has detected " + intervals.size() + " words.");
 		
 		wordsContainer.removeAll();
 		for (int i = 0; i < intervals.size(); i++) {

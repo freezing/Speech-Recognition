@@ -41,7 +41,7 @@ public class Utils {
 	public static double getZcr(double[] samples) {
 		double zcr = 0.0;
 		for (int i = 1; i < samples.length; i++) {
-			zcr += (sgn(samples[i]) - sgn(samples[i - 1])) / 2.0;
+			zcr += Math.abs(sgn(samples[i]) - sgn(samples[i - 1])) / 2.0;
 		}
 		return zcr / samples.length;
 	}
@@ -109,7 +109,7 @@ public class Utils {
 	private static AudioFormat audioFormatInstance = null;
 	public static AudioFormat getAudioFormat() {
 		if (audioFormatInstance == null) {
-			audioFormatInstance = new AudioFormat(22050, 16, 1, true, true);
+			audioFormatInstance = new AudioFormat(2 * 22050, 16, 1, true, true);
 		}
 		return audioFormatInstance;
 	}
@@ -134,22 +134,22 @@ public class Utils {
 	public static AudioInputStream getAudioInputStreamSlice(byte[] audioBytes,
 			Interval interval, AudioFormat format) {
 		int frameSize = format.getFrameSize();
+		System.out.println("Frame size = " + frameSize);
 		
-		if (frameSize == 2 && format.isBigEndian()) {
-			byte[] slice = new byte[interval.getLength() * 2];
-			for (int i = interval.getStart(); i < interval.getEnd(); i++) {
-				int idx = i - interval.getStart();
-				slice[2 * idx] = audioBytes[2 * i];
-				slice[2 * idx + 1] = audioBytes[2 * i + 1];
+		byte[] slice = new byte[interval.getLength() * frameSize];
+		
+		for (int i = interval.getStart(); i < interval.getEnd(); i++) {
+			int idx = (i - interval.getStart());
+			
+			for (int j = 0; j < frameSize; j++) {
+				slice[frameSize * idx + j] =
+						audioBytes[frameSize * i + j];
 			}
-			ByteArrayInputStream bais = new ByteArrayInputStream(slice);
-			int frameSizeInBytes = format.getFrameSize();
-			return new AudioInputStream(bais, format, slice.length
-					/ frameSizeInBytes);
 		}
-		else {
-			return null;
-		}
+		ByteArrayInputStream bais = new ByteArrayInputStream(slice);
+		int frameSizeInBytes = format.getFrameSize();
+		return new AudioInputStream(bais, format, slice.length
+				/ frameSizeInBytes);
 	}
 
 	public static double[] getSamples(AudioInputStream audioInputStream) {
@@ -179,6 +179,7 @@ public class Utils {
 		double[] audioData = null;
 		if (format.getSampleSizeInBits() == 16) {
 			int nlengthInSamples = audioBytes.length / 2;
+
 			audioData = new double[nlengthInSamples];
 			if (format.isBigEndian()) {
 				for (int i = 0; i < nlengthInSamples; i++) {
@@ -214,6 +215,24 @@ public class Utils {
 		for (int i = 0; i < audioData.length; i++) {
 			audioData[i] /= Short.MAX_VALUE;
 		}
-		return audioData;
+		
+		double[] oneChannelData = new double[audioData.length / format.getChannels()];
+		for (int i = 0; i < oneChannelData.length; i++) {
+			oneChannelData[i] = 0;
+			for (int j = i * format.getChannels(); j < (i + 1) * format.getChannels(); j++) {
+				oneChannelData[i] += audioData[j];
+			}
+			oneChannelData[i] /= format.getChannels();
+		}
+		
+		return oneChannelData;
+	}
+
+	public static byte[] makeMono(byte[] audioBytes, AudioFormat format) {
+		byte[] mono = new byte[audioBytes.length / format.getChannels()];
+		for (int i = 0; i < mono.length; i++) {
+			mono[i] = audioBytes[format.getChannels() * i];
+		}
+		return mono;
 	}
 }

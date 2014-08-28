@@ -12,6 +12,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.swing.AbstractAction;
 
 import utility.Utils;
+import voice_activity_detection.EndPointDetector;
 import voice_activity_detection.EndPointDetector2;
 import voice_activity_detection.Interval;
 
@@ -27,8 +28,8 @@ public class RecognizeSpeechAction extends AbstractAction {
 
 		List<Interval> intervals = new ArrayList<>();
 		List<AudioInputStream> audioInputStreams = new ArrayList<>();
-		intervals = new EndPointDetector2(20, (int)format.getSampleRate()).detectEndPoints(
-				samplesAIS, 10, 10);
+		intervals = new EndPointDetector2(20, (int)format.getSampleRate())
+				.detectEndPoints(samplesAIS, 10, 10, 250, 300, 180);
 		
 		for (int i = 0; i < intervals.size(); i++) {
 			AudioInputStream slice = Utils.getAudioInputStreamSlice(

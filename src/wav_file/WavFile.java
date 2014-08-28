@@ -10,14 +10,24 @@ package wav_file;
 
 // Version 1.0
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.Serializable;
+
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
 
 public class WavFile implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
 	private enum IOState {READING, WRITING, CLOSED};
-	private final static int BUFFER_SIZE = 4096;
+	private final static int BUFFER_SIZE = 4000000 + 4096;
 
 	private final static int FMT_CHUNK_ID = 0x20746D66;
 	private final static int DATA_CHUNK_ID = 0x61746164;
@@ -42,7 +52,7 @@ public class WavFile implements Serializable
 	private int validBits;					// 2 bytes unsigned, 0x0002 (2) to 0xFFFF (65,535)
 
 	// Buffering
-	private byte[] buffer;					// Local buffer used for IO
+	public byte[] buffer;					// Local buffer used for IO
 	private int bufferPointer;				// Points to the current position in local buffer
 	private int bytesRead;					// Bytes read after last read into local buffer
 	private long frameCounter;				// Current number of frames read or written
@@ -758,8 +768,6 @@ public class WavFile implements Serializable
 	public double[] readWholeFile() throws IOException, WavFileException {
 		double[] buffer = new double[(int)(this.getNumFrames()) * this.getNumChannels()];
 		readFrames(buffer, (int)(this.getNumFrames()));
-		
-		this.readFrames(buffer, (int) this.getNumFrames());
 		
 		double[] samples = new double[(int)this.getNumFrames()];
 		for (int i = 0; i < samples.length; i++) {

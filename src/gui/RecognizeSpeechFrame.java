@@ -17,6 +17,8 @@ import mediators.Mediator;
 import threads.Capture;
 import utility.Utils;
 import voice_activity_detection.Interval;
+import actions.ProcessWavFileAction;
+import actions.RecognizeFromWavFileAction;
 import actions.audiorecorder.PlayRecordingAction;
 import actions.audiorecorder.RecognizeSpeechAction;
 import actions.audiorecorder.StartRecordingRecognitionAction;
@@ -30,6 +32,7 @@ public class RecognizeSpeechFrame extends JFrame implements WindowListener {
 	private JButton recordButton;
 	private JButton stopButton;
 	private JButton processButton;
+	private JButton processFileButton;
 	
 	private JButton trainButton;
 	
@@ -85,11 +88,15 @@ public class RecognizeSpeechFrame extends JFrame implements WindowListener {
 		processButton = new JButton(new RecognizeSpeechAction());
 		processButton.setText("Recognize speech");
 		
+		processFileButton = new JButton(new RecognizeFromWavFileAction());
+		processFileButton.setText("Recognize speech using WAV file");
+		
 		setInitialState();
 		
 		container.add(recordButton);		
 		container.add(stopButton);
 		container.add(processButton);
+		container.add(processFileButton);
 		
 		wordsContainer = new JPanel();
 		wordsContainer.setSize((int) this.getSize().getWidth(), 600);
@@ -113,7 +120,7 @@ public class RecognizeSpeechFrame extends JFrame implements WindowListener {
 
 	@Override
 	public void windowClosed(WindowEvent e) {
-		TrainFrame.getInstance().setVisible(true);
+		MainFrame.getInstance().setVisible(true);
 	}
 
 	@Override

@@ -28,7 +28,7 @@ public class SpeechRecognizerTest {
 		int sampleRate = (int)wavFile.getSampleRate();
 		
 		EndPointDetector2 vad = new EndPointDetector2(20, sampleRate);
-		List<Interval> intervals = vad.detectEndPoints(samples, 10, 10);
+		List<Interval> intervals = vad.detectEndPoints(samples, 10, 10, 250, 80, 180);
 		
 		int k = 0;
 		for (Interval i : intervals) {

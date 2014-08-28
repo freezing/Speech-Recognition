@@ -36,21 +36,21 @@ public class TrainAction extends AbstractAction {
 		
 		if (!Mediator.getInstance().hasCodebook() || AddWordsFrame.getInstance().isGenerateCodebookFlagSet()) {
 			try {
+			/*	System.out.println("NOTHING");
 				System.out.println("Generating codebook...");
 				Mediator.getInstance().generateCodebook();
 				Mediator.getInstance().saveCodebook();
+				// TODO: uncomment above
 				System.out.println("==========Codebook saved==========");
 				
-				System.out.println("Retraining all HMM Models...");
+				System.out.println("Retraining all HMM Models...");*/
 				try {
-					Mediator.getInstance().retrainAllHmms();
+				//	Mediator.getInstance().retrainAllHmms();
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				System.out.println("==========Retraining finished=========");
+				//System.out.println("==========Retraining finished=========");
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
@@ -62,20 +62,19 @@ public class TrainAction extends AbstractAction {
 					String word = words.get(i);
 					
 					try {
-						System.out.println("Training: " + word);
+				/*		System.out.println("Training: " + word);
 						Mediator.getInstance().addWordAndTrainModel(word, samples, sampleRate);
 						System.out.println("Training finished....");
-						System.out.println("========================");
+						System.out.println("========================");*/
 					} catch (Exception e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				}
 			}
-		}
+		}/*
 		System.out.println("Saving new HMM Models...");
 		Mediator.getInstance().saveCurrentHmmModels();
-		System.out.println("New HMM Models saved...");
+		System.out.println("New HMM Models saved...");*/
 	}
 
 }

@@ -254,7 +254,7 @@ public class Mediator {
 		Map<String, File[]> trainingSets = trainingSetFiles.getTrainingSets();
 
 		hmmModels = new LinkedList<HmmModel>();
-		for (Entry<String, File[]> entry : trainingSets.entrySet()) {			
+		for (Entry<String, File[]> entry : trainingSets.entrySet()) {	
 			int[][] trainingSet = new int[entry.getValue().length][];
 			int m = 0;
 			
@@ -295,7 +295,7 @@ public class Mediator {
 		
 		for (HmmModel hmmModel : hmmModels) {
 			double tmpProbability = hmmModel.getHmm().viterbi(quantized);
-			//System.out.println(hmmModel.getName() + "   " + tmpProbability);
+			System.out.println(hmmModel.getName() + "   " + tmpProbability);
 			if (tmpProbability > probability) {
 				probability = tmpProbability;
 				recognizedWord = hmmModel.getName();

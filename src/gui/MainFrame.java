@@ -39,7 +39,7 @@ public class MainFrame extends JFrame {
 		
 		JButton recognizeSpeechButton = new JButton(new OpenWindowAction(RecognizeSpeechFrame.getInstance()));
 		recognizeSpeechButton.setText("Recognize Speech");
-		JButton trainButton = new JButton(new OpenWindowAction(TrainFrame.getInstance()));
+		JButton trainButton = new JButton(new OpenWindowAction(AddWordsFrame.getInstance()));
 		trainButton.setText("Train");
 		
 		container.add(recognizeSpeechButton);
