@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
@@ -199,6 +200,7 @@ public class AddWordsFrame extends JFrame implements WindowListener {
 		infoLabel.setText("Voice Activity Detector has detected " + intervals.size() + " words.");
 		
 		wordsContainer.removeAll();
+
 		for (int i = 0; i < intervals.size(); i++) {
 			JPanel wordContainer = new JPanel();
 			wordContainer.setSize(this.getWidth(), 150);
@@ -224,6 +226,7 @@ public class AddWordsFrame extends JFrame implements WindowListener {
 		
 		if (trainButton != null) {
 			wrapper.remove(trainButton);
+			System.out.println("Deleting train button...");
 		}
 		
 		if (generateCodebookFlagCheckbox != null) {
@@ -235,11 +238,14 @@ public class AddWordsFrame extends JFrame implements WindowListener {
 		generateCodebookFlagCheckbox.setEnabled(true);
 		
 		trainButton = new JButton(new TrainAction(intervalsToUse, audioInputStreams));
-		trainButton.setText("Train");
+		trainButton.setText("Add words");
 		
-		wrapper.add(generateCodebookFlagCheckbox);
+	//	wrapper.add(generateCodebookFlagCheckbox);
 		wrapper.add(trainButton);
+
 		this.invalidate();
+		this.validate();
+		this.repaint();
 	}
 
 	public Capture newCapture() {
