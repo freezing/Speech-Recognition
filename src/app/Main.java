@@ -9,7 +9,8 @@ public class Main {
 		app.setVisible(true);
 	//	Mediator mediator = new Mediator(DATABASE_PATH);
 				
-/*		WavFile wav = WavFile.openWavFile(new File("e:\\BigData\\SpeechRecognition\\tmp\\"
+/*		
+ * WavFile wav = WavFile.openWavFile(new File("e:\\BigData\\SpeechRecognition\\tmp\\"
 				+ "non-noised\\"
 				+ "nikola0.wav"));
 		int sampleRate = (int)wav.getSampleRate();
