@@ -78,6 +78,9 @@ public class RecognizeFromWavFileAction extends AbstractAction {
 			return;
 		}
 		byte[] audioBytes = new byte[format.getFrameSize() * audioFileFormat.getFrameLength()];
+		System.out.println("Frame length = " + audioFileFormat.getFrameLength());
+		System.out.println("Frame size = " + format.getFrameSize());
+		System.out.println("Audio bytes length = " + audioBytes.length);
 		try {
 			int bytesRead = audioInputStream.read(audioBytes, 0, audioBytes.length);
 			System.out.println("Bytes read = " + bytesRead);

@@ -99,7 +99,10 @@ public class EndPointDetector2 {
 			System.out.println(i);
 		}
 		System.out.println("===============================");
-		
+		List<Interval> ii = new ArrayList<>();
+		ii.add(new Interval(0, samples.length));
+		// TODO: RETURN REAL INTERVALS
+	//	return ii;
 		return getIntervals(vad, windowCount, false);
 	}	
 	
