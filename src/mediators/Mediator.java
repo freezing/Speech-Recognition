@@ -3,7 +3,6 @@ package mediators;
 import hmm.HiddenMarkovModel;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,14 +96,6 @@ public class Mediator {
 
 		Codebook codebook = new Codebook(points, Codebook.DEFAULT_SIZE);
 		codebook.initialize();
-		
-		FileWriter writer = new FileWriter(new File("e:\\tmp\\codebookClusters.txt"));
-		for (int i = 0; i < codebook.getClusters().size(); i++) {
-			String str = "[" + i + "] -> " + codebook.getClusters().get(i).toString();
-			writer.write(str);
-		}
-		writer.close();
-		
 		codebookModel = new CodebookModel(codebook, "codebook");
 	}
 
@@ -112,18 +103,11 @@ public class Mediator {
 			WavFileException {
 		WavFile wav = WavFile.openWavFile(file);
 		double[] samples = wav.readWholeFile();
-		if (file.getName().equals("0.wav") && file.getParentFile().getName().equals("three")) {
-			System.out.println("TRAINING");
-			System.out.println("Sample count = " + samples.length);
-			for (int i = 0; i < 50; i++) {
-				System.out.println(samples[i]);
-			}
-		}
+		PreProcessor.normalizePCM(samples);
 		return extractFeatureVector(samples, (int) wav.getSampleRate(), frameLength, stepLength);
 	}
 
 	private FeatureVector extractFeatureVector(double[] samples, int sampleRate, int frameLength, int stepLength) {
-		PreProcessor.normalizePCM(samples);
 		double[][] framedSamples = FrameExtractor.extractFrames(samples, frameLength, stepLength);
 
 	//	MfccExtractor mfccExtractor = new MfccExtractor(framedSamples,
@@ -279,17 +263,6 @@ public class Mediator {
 				List<KDPoint> points = featureVector.toKDPointList();
 				
 				int[] quantized = codebookModel.getCodebook().quantize(points);
-				
-
-				if (file.getName().equals("0.wav") && file.getParentFile().getName().equals("three")) {
-					System.out.println("======= FEATURE VECTOR (TRAINING) ======");
-					System.out.println("Number of points = " + quantized.length);
-					for (int i = 0; i < quantized.length; i++) {
-						System.out.println(quantized[i]);
-					}
-					System.out.println("========================================");
-				}
-				
 				trainingSet[m++] = quantized;
 			}
 
@@ -302,7 +275,7 @@ public class Mediator {
 	}
 	
 	public String recognizeSpeech(double[] samples, int sampleRate) throws Exception {
-		/*double[][] framedSamples = FrameExtractor.extractFrames(samples, FRAME_LENGTH, STEP_LENGTH);
+		double[][] framedSamples = FrameExtractor.extractFrames(samples, FRAME_LENGTH, STEP_LENGTH);
 	//	MfccExtractor mfccExtractor = new MfccExtractor(framedSamples, sampleRate);
 	//	mfccExtractor.makeFeatureVector();
 	//	FeatureVector featureVector = mfccExtractor.getFeatureVector();
@@ -313,19 +286,9 @@ public class Mediator {
 			featureVector[i] = mfcc.getParameters(framedSamples[i]);
 		}
 		fv.setFeatureVector(featureVector);
-		*/
 		
-		FeatureVector fv = extractFeatureVector(samples, sampleRate, FRAME_LENGTH, STEP_LENGTH);
 		
 		int[] quantized = codebookModel.getCodebook().quantize(fv.toKDPointList());
-
-		System.out.println();
-		System.out.println("Feature vectors (RECOGNITION):");
-		System.out.println("Number of points = " + quantized.length);
-		for (int i = 0; i < quantized.length; i++) {
-			System.out.println(quantized[i]);
-		}
-		System.out.println("-----------------------");
 		
 		String recognizedWord = null;
 		double probability = Double.NEGATIVE_INFINITY;

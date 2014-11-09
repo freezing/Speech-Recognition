@@ -48,10 +48,21 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 /**
- * Class represents left-to-right Hidden Markov Model.
- * Baum-Welch algorithm is used for training HMM and
- * Viterbi is used for calculating sequence with the highest probability.
-*/
+ * last updated on June 15, 2002<br>
+ * <b>description:</b> this class represents a left-to-right Hidden Markov Model
+ * and its essential methods for speech recognition. The collection of methods
+ * include Forward-Backward Algorithm, Baum-Welch Algorithm, Scaling, Viterbi,
+ * etc.<br>
+ * <b>calls:</b> none<br>
+ * <b>called by:</b> volume, train<br>
+ * <b>input:</b> sequence of integers<br>
+ * <b>output:</b> probability
+ * 
+ * @author Danny Su
+ * 
+ * @modified-by Ganesh Tiwari : DB Operations, Initialization of parameters
+ *              Corrected last updated on Dec-27,2010
+ */
 public class HiddenMarkovModel implements Serializable {
 	/**
 	 * minimum probability
@@ -68,7 +79,7 @@ public class HiddenMarkovModel implements Serializable {
 	protected int num_states;
 	/**
 	 * number of observation symbols per state example: how many different
-	 * color balls there are
+	 * colour balls there are
 	 */
 	protected int num_symbols;
 	/**
@@ -76,7 +87,7 @@ public class HiddenMarkovModel implements Serializable {
 	 */
 	protected final int delta = 2;
 	/**
-	 * discrete set of observation symbols example: sequence of color of balls
+	 * discrete set of observation symbols example: sequence of colour of balls
 	 */
 	protected int obSeq[][];
 	/**
@@ -123,7 +134,12 @@ public class HiddenMarkovModel implements Serializable {
 	public int q[];
 
 	/**
-	 * viterbi algorithm used to get best state sequence and probability
+	 * viterbi algorithm used to get best state sequence and probability<br>
+	 * calls: none<br>
+	 * called by: volume
+	 * 
+	 * @param testSeq
+	 *            test sequence
 	 * @return probability
 	 */
 	public double viterbi(int testSeq[]) {
@@ -185,8 +201,12 @@ public class HiddenMarkovModel implements Serializable {
 	}
 
 	/**
-	 * rescales backward variable beta to prevent underflow
-	 * @param t index number of backward variable beta
+	 * rescales backward variable beta to prevent underflow<br>
+	 * calls: none<br>
+	 * called by: HiddenMarkov
+	 * 
+	 * @param t
+	 *            index number of backward variable beta
 	 */
 	private void rescaleBeta(int t) {
 		for (int i = 0; i < num_states; i++) {
@@ -217,9 +237,13 @@ public class HiddenMarkovModel implements Serializable {
 	}
 
 	/**
-	 * returns the probability calculated from the testing sequence
-	 * @param testSeq testing sequence
-	 * @return probability of observation sequence for the given model
+	 * returns the probability calculated from the testing sequence<br>
+	 * calls: none<br>
+	 * called by: volume
+	 * 
+	 * @param testSeq
+	 *            testing sequence
+	 * @return probability of observation sequence given the model
 	 */
 	public double getProbability(int testSeq[]) {
 		setObSeq(testSeq);
@@ -230,6 +254,9 @@ public class HiddenMarkovModel implements Serializable {
 
 	/**
 	 * calculate forward variable alpha<br>
+	 * calls: none<br>
+	 * called by: HiddenMarkov
+	 * 
 	 * @return probability
 	 */
 	protected double computeAlpha() {
@@ -301,6 +328,8 @@ public class HiddenMarkovModel implements Serializable {
 
 	/**
 	 * calculate backward variable beta for later use with Re-Estimation method<br>
+	 * calls: none<br>
+	 * called by: HiddenMarkov
 	 */
 	protected void computeBeta() {
 		/**
@@ -326,8 +355,11 @@ public class HiddenMarkovModel implements Serializable {
 
 	/**
 	 * set the number of training sequences<br>
+	 * calls: none<br>
+	 * called by: trainHMM
 	 * 
-	 * @param k number of training sequences
+	 * @param k
+	 *            number of training sequences
 	 */
 	public void setNumObSeq(int k) {
 		num_obSeq = k;
@@ -336,8 +368,13 @@ public class HiddenMarkovModel implements Serializable {
 
 	/**
 	 * set a training sequence for re-estimation step<br>
-	 * @param k index representing kth training sequence
-	 * @param trainSeq training sequence
+	 * calls: none<br>
+	 * called by: trainHMM
+	 * 
+	 * @param k
+	 *            index representing kth training sequence
+	 * @param trainSeq
+	 *            training sequence
 	 */
 	public void setTrainSeq(int k, int trainSeq[]) {
 		obSeq[k] = trainSeq;
@@ -350,7 +387,11 @@ public class HiddenMarkovModel implements Serializable {
 
 	/**
 	 * set training sequences for re-estimation step<br>
-	 * @param trainSeq training sequences
+	 * calls: none<br>
+	 * called by: trainHMM
+	 * 
+	 * @param trainSeq
+	 *            training sequences
 	 */
 	public void setTrainSeq(int trainSeq[][]) {
 		num_obSeq = trainSeq.length;
@@ -362,10 +403,12 @@ public class HiddenMarkovModel implements Serializable {
 	}
 
 	/**
-	 * train the hmm model until no more improvement
+	 * train the hmm model until no more improvement<br>
+	 * calls: none<br>
+	 * called by: trainHMM
 	 */
 	public void train() {
-		// re-estimate 20 times
+		// re-estimate 25 times
 		// NOTE: should be changed to re-estimate until no more improvement
 		for (int i = 0; i < 20; i++) {
 			reestimate();
@@ -377,7 +420,9 @@ public class HiddenMarkovModel implements Serializable {
 
 	/**
 	 * Baum-Welch Algorithm - Re-estimate (iterative update and improvement) of
-	 * HMM parameters
+	 * HMM parameters<br>
+	 * calls: none<br>
+	 * called by: trainHMM
 	 */
 	private void reestimate() {
 		// new probabilities that will be the optimized and replace the older
@@ -474,10 +519,14 @@ public class HiddenMarkovModel implements Serializable {
 
 	/**
 	 * class constructor - used to create a left-to-right model with multiple
-	 * observation sequences for training
+	 * observation sequences for training<br>
+	 * calls: none<br>
+	 * called by: trainHMM
 	 * 
-	 * @param num_states number of states in the model
-	 * @param num_symbols number of symbols per state
+	 * @param num_states
+	 *            number of states in the model
+	 * @param num_symbols
+	 *            number of symbols per state
 	 */
 	public HiddenMarkovModel(int num_states, int num_symbols) {
 		this.num_states = num_states;
@@ -500,7 +549,9 @@ public class HiddenMarkovModel implements Serializable {
 	}
 
 	/**
-	 * generates random probabilities for transition, output probabilities
+	 * generates random probabilities for transition, output probabilities<br>
+	 * calls: none<br>
+	 * called by: HiddenMarkov corrected by GT
 	 */
 	private void randomProb() {
 		for (int i = 0; i < num_states; i++) {
