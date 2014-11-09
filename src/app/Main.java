@@ -9,7 +9,7 @@ public class Main {
 		app.setVisible(true);
 	//	Mediator mediator = new Mediator(DATABASE_PATH);
 				
-/*		
+/*		PUSI KURAC!
  * WavFile wav = WavFile.openWavFile(new File("e:\\BigData\\SpeechRecognition\\tmp\\"
 				+ "non-noised\\"
 				+ "nikola0.wav"));
